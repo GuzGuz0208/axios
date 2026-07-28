@@ -1,6 +1,8 @@
 name: Continuous integration
 
 on:
+  push:
+    branches: [v1.x]
   pull_request:
     types: [opened, synchronize, reopened]
 
@@ -282,3 +284,19 @@ jobs:
       - name: Run Deno smoke tests
         working-directory: tests/smoke/deno
         run: deno task test
+
+  sonarcloud:
+    name: SonarCloud analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: SonarCloud scan
+        uses: SonarSource/sonarqube-scan-action@22918119ff8e1ca75a623e15c8296b6ea4fbe28f # v8.2.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
