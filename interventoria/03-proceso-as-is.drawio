@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" agent="interventoria-axios" version="24.0.0">
+  <diagram id="asis-process" name="Proceso as-is (PR -> release)">
+    <mxGraphModel dx="1800" dy="700" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1820" pageHeight="620" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Lanes -->
+        <mxCell id="laneA" value="Contribuidor" style="swimlane;horizontal=0;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="0" y="0" width="1820" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="laneB" value="Mantenedor / Revisor" style="swimlane;horizontal=0;startSize=30;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="0" y="140" width="1820" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="laneC" value="GitHub Actions (CI/CD)" style="swimlane;horizontal=0;startSize=30;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="0" y="280" width="1820" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="laneD" value="Registro npm / Observabilidad externa" style="swimlane;horizontal=0;startSize=30;fillColor=#f8cecc;strokeColor=#b85450;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="0" y="440" width="1820" height="150" as="geometry" />
+        </mxCell>
+
+        <!-- Contribuidor -->
+        <mxCell id="c1" value="Commit + push a branch de trabajo" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="50" y="45" width="160" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="c2" value="Abre Pull Request contra v1.x" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="260" y="45" width="160" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Mantenedor -->
+        <mxCell id="m1" value="Revisión de código (maintainer)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="470" y="185" width="170" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="m2" value="¿Aprobado y CI en verde?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="690" y="175" width="140" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="m3" value="Merge (squash) a v1.x" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="880" y="185" width="170" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="m4" value="workflow_dispatch -&gt; Create release branch (patch/minor/major)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="1200" y="180" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="m5" value="Aprueba y mergea PR de version (changelog + bump)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="1520" y="180" width="200" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- GitHub Actions -->
+        <mxCell id="g1" value="run-ci.yml (pull_request): 8 jobs — build, lint, unit+browser tests, pack, dependency-review, smoke CJS/ESM/Bun/Deno" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="470" y="325" width="170" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="g2" value="run-ci.yml (push a v1.x) + job sonarcloud (nuevo)&#10;PUNTO DE CONTROL: Quality Gate sobre Overall Code" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="880" y="325" width="170" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="g3" value="release-branch.yml: build+test, bump version, abre PR de release" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="1200" y="325" width="200" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="g4" value="Push de tag v1.*.* -&gt; dispara publish.yml" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="1520" y="335" width="200" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Registro npm / Observabilidad -->
+        <mxCell id="p4" value="Post mortem si hay incidente (ej. #10636)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="370" y="485" width="200" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="p3" value="GitHub Security Advisories / CVE (async, cualquier momento del ciclo)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="720" y="485" width="220" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="p2" value="SonarCloud evalua el Quality Gate (Overall Code) en cada push/PR" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="485" width="220" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="p1" value="publish.yml: build + npm publish --provenance (OIDC, entorno npm-publish)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1520" y="485" width="220" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Edges: main flow -->
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" parent="1" source="c1" target="c2"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" parent="1" source="c2" target="m1"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" parent="1" source="c2" target="g1"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" parent="1" source="m1" target="m2"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" parent="1" source="g1" target="m2"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e6" value="Si" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" parent="1" source="m2" target="m3"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e7" value="No: changes requested" style="edgeStyle=orthogonalEdgeStyle;html=1;dashed=1;curved=1;exitX=0.5;exitY=0;entryX=0.5;entryY=0;" edge="1" parent="1" source="m2" target="c2"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="760" y="20"/><mxPoint x="340" y="20"/></Array></mxGeometry></mxCell>
+        <mxCell id="e8" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" parent="1" source="m3" target="g2"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e9" value="veredicto" style="edgeStyle=orthogonalEdgeStyle;html=1;dashed=1;" edge="1" parent="1" source="g2" target="p2"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e10" value="cadencia manual" style="edgeStyle=orthogonalEdgeStyle;html=1;dashed=1;" edge="1" parent="1" source="m3" target="m4"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e11" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" parent="1" source="m4" target="g3"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e12" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" parent="1" source="g3" target="m5"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e13" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" parent="1" source="m5" target="g4"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e14" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" parent="1" source="g4" target="p1"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+        <!-- Edges: async / feedback -->
+        <mxCell id="e15" value="hallazgo confirmado" style="edgeStyle=orthogonalEdgeStyle;html=1;dashed=1;" edge="1" parent="1" source="p2" target="p3"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e16" value="si se materializa" style="edgeStyle=orthogonalEdgeStyle;html=1;dashed=1;" edge="1" parent="1" source="p3" target="p4"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e17" value="retroalimentacion: hardening de CI (ej. OIDC en publish.yml tras #10636)" style="edgeStyle=orthogonalEdgeStyle;html=1;dashed=1;strokeColor=#b85450;exitX=0;exitY=0.5;entryX=0;entryY=1;" edge="1" parent="1" source="p4" target="g1"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="200" y="460"/><mxPoint x="200" y="440"/></Array></mxGeometry></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
