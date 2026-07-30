@@ -33,12 +33,14 @@ Ninguno de estos dos conjuntos de hechos anula al otro. El dictamen de §5 los c
 ## 3. Estado del pipeline de verificación (prerrequisito técnico)
 
 - **Fork:** [`GuzGuz0208/axios`](https://github.com/GuzGuz0208/axios), rama `v1.x`.
-- **Corrección aplicada:** `run-ci.yml` solo disparaba en `pull_request`; se agregó trigger `push` sobre `v1.x` y un job `sonarcloud` (commit `eb0fc83`, pusheado directamente a `v1.x` del fork durante esta interventoría).
-- **Estado a la fecha de este informe:** el job `Continuous integration` corrió exitosamente sobre el commit `eb0fc83` (primera corrida real del pipeline en el fork). El job `sonarcloud` requiere que el equipo complete 2 pasos manuales de configuración (secret `SONAR_TOKEN` + desactivar Automatic Analysis en SonarCloud) — **pendiente de ejecución por el equipo**, documentado paso a paso en la conversación de configuración del proyecto.
+- **Corrección aplicada (commit `eb0fc83`):** `run-ci.yml` solo disparaba en `pull_request`; se agregó trigger `push` sobre `v1.x` y un job `sonarcloud`.
+- **Corrección aplicada (commit `d8e296d`):** el paso `Dependency Review` solo funciona con el contexto de un Pull Request (diff base/head); al agregar el trigger `push` empezó a fallar en cada push directo. Se marcó condicional (`if: github.event_name == 'pull_request'`).
+- **Estado verificado (commit `d8e296d`):** los 8 jobs originales del pipeline (build, lint, tests unitarios, tests de navegador, empaquetado, y smoke/module tests de CJS/ESM/Bun/Deno en toda la matriz de Node) **corren en verde**. El job `sonarcloud` fallaba con el mensaje `Running this GitHub Action without SONAR_TOKEN is not recommended` (exit code 3) — indicando que el secret no estaba disponible en ese momento.
+- **Estado tras la configuración del secret por el equipo:** pendiente de confirmar en la próxima corrida (ver commit posterior a este).
 - **URL del pipeline:** `https://github.com/GuzGuz0208/axios/actions`
 - **URL del tablero:** `https://sonarcloud.io/summary/overall?id=GuzGuz0208_axios&branch=v1.x`
 
-**Acción pendiente antes de radicar:** el equipo debe completar los 2 pasos de SonarCloud, re-ejecutar el pipeline, y reemplazar esta sección con las capturas/URLs finales mostrando el veredicto del Quality Gate ya calculado desde CI (no desde Automatic Analysis).
+**Acción pendiente antes de radicar:** confirmar que el job `sonarcloud` pasa en verde y reemplazar esta sección con el veredicto final del Quality Gate calculado desde CI.
 
 ## 4. Síntesis cuantitativa
 
