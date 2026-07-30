@@ -36,11 +36,12 @@ Ninguno de estos dos conjuntos de hechos anula al otro. El dictamen de §5 los c
 - **Corrección aplicada (commit `eb0fc83`):** `run-ci.yml` solo disparaba en `pull_request`; se agregó trigger `push` sobre `v1.x` y un job `sonarcloud`.
 - **Corrección aplicada (commit `d8e296d`):** el paso `Dependency Review` solo funciona con el contexto de un Pull Request (diff base/head); al agregar el trigger `push` empezó a fallar en cada push directo. Se marcó condicional (`if: github.event_name == 'pull_request'`).
 - **Estado verificado (commit `d8e296d`):** los 8 jobs originales del pipeline (build, lint, tests unitarios, tests de navegador, empaquetado, y smoke/module tests de CJS/ESM/Bun/Deno en toda la matriz de Node) **corren en verde**. El job `sonarcloud` fallaba con el mensaje `Running this GitHub Action without SONAR_TOKEN is not recommended` (exit code 3) — indicando que el secret no estaba disponible en ese momento.
-- **Estado tras la configuración del secret por el equipo:** pendiente de confirmar en la próxima corrida (ver commit posterior a este).
+- **Estado verificado (commit `3e6c7dd`, 2026-07-30T14:47:11Z):** el job `sonarcloud` corrió exitosamente con el `SONAR_TOKEN` configurado por el equipo. Se confirmó, vía `api/project_branches/list`, que el análisis de SonarCloud sobre `v1.x` corresponde exactamente a este commit y este timestamp — es decir, es un análisis disparado por CI, no por Automatic Analysis.
+- **Veredicto real del Quality Gate obtenido (`api/qualitygates/project_status`):** **ERROR (falla)** — condiciones que fallan: `new_security_rating` (B obtenido, A exigido) y `new_coverage` (0.0% obtenido, 80% exigido, por la ausencia de reporte de cobertura ya documentada en `02-anexo-iso25010.md` §4). Condiciones que pasan: `new_reliability_rating`, `new_maintainability_rating`, `new_duplicated_lines_density`, `new_security_hotspots_reviewed`.
+- **Nota importante:** este veredicto usa el Quality Gate **por defecto de SonarCloud ("Sonar way"), que evalúa New Code**, no todavía el gate de **Overall Code** con los umbrales propios de `02-anexo-iso25010.md` §3. Aplicar ese gate personalizado en SonarCloud (Quality Gates → crear uno nuevo con las condiciones de esa tabla → asignarlo al proyecto) es el único paso de configuración de UI que sigue pendiente; con los umbrales propios, el veredicto también sería ERROR, pero por Security Rating y Reliability Rating sobre el código completo (ver §4).
+- **Métricas del proyecto en este análisis:** 21 bugs, 56 vulnerabilidades, 390 code smells sobre ~10.9K líneas.
 - **URL del pipeline:** `https://github.com/GuzGuz0208/axios/actions`
 - **URL del tablero:** `https://sonarcloud.io/summary/overall?id=GuzGuz0208_axios&branch=v1.x`
-
-**Acción pendiente antes de radicar:** confirmar que el job `sonarcloud` pasa en verde y reemplazar esta sección con el veredicto final del Quality Gate calculado desde CI.
 
 ## 4. Síntesis cuantitativa
 
